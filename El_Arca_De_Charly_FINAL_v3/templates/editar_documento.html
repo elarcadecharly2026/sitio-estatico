@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1>✏️ Editar Documento</h1>
+  
+  <form method="POST" enctype="multipart/form-data" class="mt-4">
+    
+    <div class="mb-3">
+      <label for="owner_id" class="form-label">Cliente</label>
+      <select name="owner_id" id="owner_id" class="form-select" required>
+        <option value="">-- Selecciona un cliente --</option>
+        {% for owner in owners %}
+          <option value="{{ owner.id }}" {% if doc.owner_id == owner.id %}selected{% endif %}>
+            {{ owner.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="pet_id" class="form-label">Mascota</label>
+      <select name="pet_id" id="pet_id" class="form-select" required>
+        <option value="">-- Selecciona una mascota --</option>
+        {% for pet in pets %}
+          <option value="{{ pet.id }}" {% if doc.pet_id == pet.id %}selected{% endif %}>
+            {{ pet.name }} (Dueño: {{ pet.owner.name if pet.owner else 'N/A' }})
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="tipo_documento" class="form-label">Tipo de Documento</label>
+      <input type="text" 
+             name="tipo_documento" 
+             id="tipo_documento" 
+             class="form-control" 
+             value="{{ doc.tipo_documento }}" 
+             placeholder="Ej: Vacuna, Cirugía, Desparasitación"
+             required>
+    </div>
+
+    <div class="mb-3">
+      <label for="archivo" class="form-label">Archivo (opcional - para reemplazar)</label>
+      <input type="file" 
+             name="archivo" 
+             id="archivo" 
+             class="form-control" 
+             accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+      <small class="text-muted">
+        <p>Archivo actual: {{ doc.ruta_archivo.split('/')[-1] }}</p>
+        
+      </small>
+    </div>
+
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-primary">💾 Guardar cambios</button>
+      <a href="{{ url_for('documentos') }}" class="btn btn-secondary">❌ Cancelar</a>
+    </div>
+
+  </form>
+</div>
+
+<style>
+  .form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  .btn {
+    min-width: 120px;
+  }
+</style>
+
+{% endblock %}

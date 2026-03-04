@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Hardware</h2>
+
+{% if not is_windows %}
+<p>Esta página de prueba está pensada para Windows (impresora/cajón). En Linux/Mac, usa CUPS/udev/lsusb.</p>
+{% endif %}
+
+<h3>Impresora térmica</h3>
+<p>Impresora predeterminada: <b>{{ default_prn or '—' }}</b></p>
+<form method="post" action="{{ safe_url('hardware_print_test') }}" class="form-inline">
+  <label>Impresora</label>
+  <select name="printer">
+    <option value="">(Predeterminada)</option>
+    {% for p in printers %}<option value="{{ p }}">{{ p }}</option>{% endfor %}
+  </select>
+  <button>Imprimir prueba</button>
+</form>
+
+<h3>Cajón de dinero</h3>
+<form method="post" action="{{ safe_url('hardware_open_drawer') }}" class="form-inline">
+  <label>Impresora</label>
+  <select name="printer">
+    <option value="">(Predeterminada)</option>
+    {% for p in printers %}<option value="{{ p }}">{{ p }}</option>{% endfor %}
+  </select>
+  <button>Enviar pulso (abrir)</button>
+</form>
+
+<h3>Escáner</h3>
+<p>La mayoría funcionan como teclado (HID). Prueba rápida:</p>
+<input id="scan_test" placeholder="Enfoca aquí y escanea..." style="width:320px">
+<p id="scan_result" style="color:#9ae6b4"></p>
+<script>
+(function(){
+  const box = document.getElementById('scan_test');
+  const out = document.getElementById('scan_result');
+  let last = 0, chars = 0, timer = null;
+  box.addEventListener('keydown', (e)=>{
+    const now = performance.now();
+    if (now - last < 25) { chars++; } else { chars = 1; }
+    last = now;
+    clearTimeout(timer);
+    timer = setTimeout(()=>{
+      if (chars > 6) out.textContent = "Velocidad alta → parece ESCÁNER";
+      else out.textContent = "Velocidad humana → teclado normal";
+      chars = 0;
+    }, 60);
+  });
+})();
+</script>
+
+<h3>Puertos COM detectados</h3>
+<ul>
+  {% for c in coms %}<li>{{ c }}</li>{% else %}<li>—</li>{% endfor %}
+</ul>
+
+<h3>Dispositivos HID (pista rápida)</h3>
+<ul>
+  {% for h in hid_list %}<li>{{ h }}</li>{% else %}<li>—</li>{% endfor %}
+</ul>
+{% endblock %}

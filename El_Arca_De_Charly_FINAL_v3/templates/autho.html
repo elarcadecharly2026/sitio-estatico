@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Autorizaciones{% endblock %}
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<div class="download-section">
+    <h3>Formatos de Autorización</h3>
+    
+    <a href="{{ url_for('download_pdf', filename='FORMATO AUTORIZACION QUIRURGICA ANIMAL.pdf') }}" 
+       class="btn btn-primary" download>
+        📋 Autorización Quirúrgica
+    </a>
+    
+    <a href="{{ url_for('download_pdf', filename='FORMATO AUTORIZACION EUTANACIA.pdf') }}" 
+       class="btn btn-secondary" download>
+        📋 Autorización Eutanacia Animal
+    </a>
+    
+    <p>Descarga, llena y sube vía "Documentos".</p>
+</div>
+
+{% endblock %}

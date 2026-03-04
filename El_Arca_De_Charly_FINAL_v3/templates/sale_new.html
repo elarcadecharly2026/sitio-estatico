@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- En sale_new.html, antes del h2 -->
+<ul class="nav nav-tabs">
+  <li><a class="nav-link" href="{{ url_for('nueva_venta') }}">Ventas Externas</a></li>
+  <li><a class="nav-link active" href="{{ url_for('ventas_interna') }}">Ventas Internas</a></li>
+</ul>
+<!-- En internas, agrega select de staff -->
+<select name="internal_user">
+{% for u in staff_users %}
+  <option value="{{ u.id }}">{{ u.email }}</option>
+{% endfor %}
+</select>
+
+<!-- En internas, agrega: -->
+<select name="user_internal" required>
+  <option>Seleccionar empleado interno</option>
+  <!-- Lista de usuarios internos desde backend -->
+</select>
+
+<h2>Venta</h2>
+<form method="post" class="form-inline">
+  <input name="code" placeholder="Código (puedes escanear)" autofocus>
+  <input name="qty" type="number" step="1" value="1">
+  <button>Agregar</button>
+</form>
+<table class="table" style="text-align: right;">
+  <thead>
+    <tr>
+      <th>Producto</th>
+      <th>Cantidad</th>
+      <th>Precio</th>
+      <th>Subtotal</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for it in items %}
+    <tr>
+      <td>{{ it.product.name if it.product else it.code or 'N/A' }}</td>
+      <td>{{ it.qty }}</td>
+      <td>{{ '%.2f'|format(it.price) }}</td>
+      <td>{{ '%.2f'|format(it.qty * it.price) }}</td>
+      <td>
+        <form method="post" action="{{ safe_url('venta_item_delete', sale_id=sale.id, item_id=it.id) }}">
+          <button class="link danger">Quitar</button>
+        </form>
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="5">Sin ítems</td></tr>
+  {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <th colspan="3" class="text-end">TOTAL</th>
+      <th>{{ '%.2f'|format(total) }}</th>
+      <th></th>
+    </tr>
+  </tfoot>
+</table>
+<div class="form-inline">
+  <form method="post" action="{{ safe_url('venta_finalizar', sale_id=sale.id) }}"><button class="success">Finalizar</button></form>
+  <form method="post" action="{{ safe_url('venta_cancelar', sale_id=sale.id) }}"><button class="danger">Cancelar</button></form>
+</div>
+
+
+
+{% endblock %}

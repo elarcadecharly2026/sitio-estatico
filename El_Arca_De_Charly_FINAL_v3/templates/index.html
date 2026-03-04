@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Bienvenido</h1>
+<p>Gestiona inventario, ventas, usuarios y auditoría.</p>
+<ol>
+  <li>Ve a <a href="{{ safe_url('inventory_list') }}">Inventario</a> para escanear o editar.</li>
+  <li>Abre <a href="{{ safe_url('nueva_venta') }}">Ventas</a> para cobrar y descontar stock.</li>
+  <li>En <a href="{{ safe_url('admin_datos') }}">Administrativo</a> puedes hacer respaldo, CSV e ir a Configuración/Hardware.</li>
+</ol>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Administrativo</h2>
+
+<h3>Respaldo SQLite</h3>
+<p><a class="btn" href="{{ safe_url('admin_backup') }}">Descargar vet.db</a></p>
+
+<hr>
+<h3>Inventario (CSV)</h3>
+<p><a class="btn" href="{{ safe_url('inventory_export') }}">Exportar inventario</a></p>
+<form method="post" action="{{ safe_url('inventory_import') }}" enctype="multipart/form-data">
+  <input type="file" name="file" accept=".csv" required>
+  <button>Importar CSV</button>
+</form>
+
+<hr>
+<h3>Marca y Logo</h3>
+<p><a class="btn" href="{{ safe_url('admin_config') }}">Abrir Configuración</a></p>
+
+<hr>
+<h3>Hardware</h3>
+<p><a class="btn" href="{{ safe_url('admin_hardware') }}">Probar impresora/cajón/escáner</a></p>
+{% endblock %}

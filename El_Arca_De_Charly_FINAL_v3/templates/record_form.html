@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Nuevo Registro - {{ pet.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Nuevo Registro Clínico - {{ pet.name }}</h2>
+    
+    <form method="POST">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Fecha y Hora <span class="text-danger">*</span></label>
+                        <input type="datetime-local" name="date" class="form-control" required>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">Peso (kg)</label>
+                        <input type="number" step="0.1" min="0" name="weight" class="form-control">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">Talla (cm)</label>
+                        <input type="number" step="0.1" min="0" name="height" class="form-control">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">Temperatura (°C)</label>
+                        <input type="number" step="0.1" min="30" max="45" name="temperature" class="form-control">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">Desparasitado</label>
+                        <input type="date" name="dewormed" class="form-control">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">Vacunado</label>
+                        <input type="date" name="vaccinated" class="form-control">
+                    </div>
+                    
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Cirugía</label>
+                        <input type="text" name="surgery" class="form-control" placeholder="Ej: Esterilización, Fractura, etc.">
+                    </div>
+                    
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Última Cirugía</label>
+                        <input type="date" name="last_surgery" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex gap-2 justify-content-end">
+                <a href="{{ url_for('historial_clinico') }}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-success">Guardar Registro</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

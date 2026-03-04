@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Nueva Cita{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0"><i class="fas fa-calendar-plus"></i> +Nueva Cita</h4>
+        </div>
+        <div class="card-body">
+          <form method="POST">
+            <!-- Tipo de evento -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Tipo de evento *</label>
+              <select class="form-select" name="tipo" required>
+                <option value="Consulta">Consulta</option>
+                <option value="Vacuna">Vacuna</option>
+                <option value="Prueba">Prueba</option>
+                <option value="Cirugía">Cirugía</option>
+                <option value="Desparasitación">Desparasitación</option>
+              </select>
+            </div>
+
+            <!-- Motivo -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Motivo *</label>
+              <input type="text" class="form-control" name="motivo" 
+                     placeholder="ej: Control anual, dolor abdominal..." required>
+            </div>
+
+            <!-- Fecha y Hora -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Fecha *</label>
+                <input type="date" class="form-control" name="fecha" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Hora *</label>
+                <input type="time" class="form-control" name="hora" required>
+              </div>
+            </div>
+
+            <!-- Duración -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Duración</label>
+              <select class="form-select" name="duracion">
+                <option value="15">15 minutos</option>
+                <option value="30" selected>30 minutos</option>
+                <option value="45">45 minutos</option>
+                <option value="60">1 hora</option>
+              </select>
+            </div>
+
+            <!-- Mascota (de historial clínico) -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Cliente / Mascota *</label>
+              <select class="form-select" name="pet_id" required>
+                <option value="">Seleccionar...</option>
+                {% for pet in pets %}
+                <option value="{{ pet.id }}">
+                  {{ pet.owner.name }} - {{ pet.name }} 
+                  ({{ pet.breed or 'Sin raza' }}, {{ pet.age }} años)
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Veterinario -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Veterinario / Personal *</label>
+              <input type="text" class="form-control" name="vet" 
+                     value="Dr." placeholder="ej: Ceci, Dr. López..." required>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <a href="{{ url_for('citas') }}" class="btn btn-secondary me-md-2">
+                <i class="fas fa-arrow-left"></i> Cancelar
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Guardar Entrada
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    const fecha = document.querySelector('[name="fecha"]').value;
+    const hora = document.querySelector('[name="hora"]').value;
+    console.log('Fecha completa:', fecha + 'T' + hora);  // Debe mostrar: 2026-02-10T14:30
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% block title %}Historial Clínico{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Historial Clínico</h2>
+
+
+<form method="get" class="form-inline">
+  <input name="q" type="text" id="search-pet" placeholder="Buscar mascota..." value="{{ q }}">
+  <button>Buscar</button>
+  <button type="button" onclick="window.location.href='{{ url_for('nueva_mascota') }}'">+ Nueva Mascota</button>
+</form>
+
+    <div id="pets-list" class="mt-2">
+{% for pet in pets %}
+    <a href="?petid={{ pet.id }}&q={{ q }}"
+       class="btn btn-outline-primary btn-sm mb-1">
+       {{ pet.name }}
+    </a>
+  {% endfor %}
+</div>
+
+
+
+    {% if selected_pet %}
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <a href="{{ url_for('nuevo_registro', pet_id=selected_pet.id, q=q) }}" class="btn btn-success btn-sm">+ Nuevo Registro Clínico</a>
+    </div>
+    <!-- Detalles de la mascota seleccionada -->
+<div class="card mb-4 shadow-sm">
+  <div class="card-header bg-primary text-white">
+    <div class="d-flex align-items-center">
+       
+      <img src="{{ url_for('static', filename=selected_pet.image or 'default-pet.jpg') }}" alt="Mascota">
+      <a href="{{ url_for('editar_foto', petid=selected_pet.id) }}" class="btn btn-outline-warning btn-sm ms-2">
+    <i class="fas fa-edit"></i> Editar Foto
+</a>
+<div class="ms-3">
+        <h4 class="mb-0">
+          {{ selected_pet.owner.name if selected_pet.owner else 'Sin dueño registrado' }}
+        </h4>
+        <small class="text-white-50">
+          {{ selected_pet.name }} • 
+          {{ selected_pet.owner.email if selected_pet and selected_pet.owner and selected_pet.owner.email else 'Sin email' }} •
+          {{ selected_pet.owner.phone if selected_pet and selected_pet.owner and selected_pet.owner.phone else 'Sin teléfono' }} •
+          {{ selected_pet.owner.address if selected_pet and selected_pet.owner and selected_pet.owner.address else 'Sin dirección' }} •
+          {{ selected_pet.owner.birth_date.strftime('%d/%m/%Y') if selected_pet and selected_pet.owner and selected_pet.owner.birth_date else 'Sin fecha de nacimiento' }}
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+    <!-- Lista de registros clínicos -->
+     <div class="card mb-3 border-left-primary border-4 record-card">
+<div class="card shadow-sm">
+    <div class="card-header">
+        <strong>Registros Clínico: {{ records|length }}</strong>
+    </div>
+    
+    <div class="card-body">
+        {% if records %}
+            {% for record in records %}
+            <div class="card mb-3 border-left-primary border-4">
+                <div class="card-header d-flex justify-content-between align-items-center bg-light">
+                    <span class="fw-bold">
+                        {{ record.date.strftime('%d/%m/%Y %H:%M') if record.date else 'Sin fecha' }}
+                    </span>
+                </div>
+                <p></p>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% if record.weight %}
+                        <div class="col-md-6">
+                            <strong>Peso:</strong> {{ record.weight }} kg
+                        </div>
+                        {% endif %}
+                        
+                        {% if record.height %}
+                        <div class="col-md-6">
+                            <strong>Talla:</strong> {{ record.height }} cm
+                        </div>
+                        {% endif %}
+                        
+                        {% if record.temperature %}
+                        <div class="col-md-4">
+                            <strong>Temperatura:</strong> {{ record.temperature }}°C
+                        </div>
+                        {% endif %}
+                        
+                        {% if record.dewormed %}
+                        <div class="col-md-4">
+                            <strong>Desparasitado:</strong> 
+                            <span class="badge bg-success">{{ record.dewormed.strftime('%d/%m/%Y') if record.dewormed else 'No' }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if record.vaccinated %}
+                        <div class="col-md-4">
+                            <strong>Vacunado:</strong> 
+                            <span class="badge bg-success">{{ record.vaccinated.strftime('%d/%m/%Y') if record.vaccinated else 'No' }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if record.surgery %}
+                        <div class="col-md-6">
+                            <strong>Cirugía:</strong> {{ record.surgery }}
+                        </div>
+                        {% endif %}
+                        
+                        {% if record.last_surgery %}
+                        <div class="col-md-6">
+                            <strong>Última cirugía:</strong> {{ record.last_surgery.strftime('%d/%m/%Y') if record.last_surgery else 'N/A' }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer bg-light d-flex justify-content-end gap-2">
+                    <button class="btn btn-sm btn-outline-secondary editar-btn" 
+                            data-recordid="{{ record.id }}" 
+                            data-petid="{{ selected_pet.id }}" 
+                            data-q="{{ q }}">Editar</button>
+                    <form method="POST" action="{{ url_for('eliminar_registro', record_id=record.id) }}" class="d-inline" onsubmit="return confirm('¿Eliminar?')">
+                        <input type="hidden" name="pet_id" value="{{ selected_pet.id }}">
+                        <input type="hidden" name="q" value="{{ q }}">
+                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                <h5>No hay registros clínicos aún</h5>
+                <p class="text-muted">Crea el primer registro clínico usando el botón de arriba</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+</div>
+
+    {% endif %}
+</div>
+
+<style>
+/* Fichas de registros clínicos */
+.record-card {
+  background: #03032c;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.record-card .card-header {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.record-card + .record-card {
+  margin-top: 12px; /* espacio entre fichas */
+}
+
+    .register-section {
+  background: #0b1927;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+.register-section .btn {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.main-content { display: flex; flex-direction: column; gap: 20px; padding: 20px; }
+.pet-section, .record-section { 
+    background: #f8f9fa; border-radius: 8px; padding: 15px; transition: opacity 0.3s ease; 
+}
+.pet-section h3, .record-section h4 { margin: 0 0 10px; color: #333; }
+.btn { margin: 5px; transition: all 0.2s; display: flex;justify-content: space-between;
+    align-items: center;}
+.btn:hover { transform: translateY(-1px); }
+.loading { opacity: 0.6; pointer-events: none; }
+#petSearch { width: 300px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+
+.mt-2{
+    display: flex;
+    flex-wrap: wrap;   /* permite que salten de línea si no caben */
+    gap: 0.5rem;       /* separa los botones */
+}
+
+/* FIJA EL LAYOUT - agrega al final de tu style */
+.search-section {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1rem !important;
+    flex-wrap: nowrap !important;
+}
+
+.search-section form {
+    flex: 1 !important;
+    margin: 0 !important;
+}
+
+.search-section .form-control {
+    min-width: 250px !important;
+}
+
+</style>
+
+
+<script>
+document.querySelectorAll('.editar-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    window.location.href = `/editar_registro/${this.dataset.recordid}?petid=${this.dataset.petid}&q=${encodeURIComponent(this.dataset.q)}`;
+  });
+});
+     // Opcional: Previene submit accidental del form
+    document.querySelectorAll('button[type="button"]').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = this.getAttribute('data-href') || this.onclick.toString().match(/'([^']+)'/)[1];
+        });
+    });
+document.addEventListener('DOMContentLoaded', function () {
+  const searchInput = document.getElementById('search-pet');
+  const form = searchInput.form;
+
+  searchInput.addEventListener('keyup', function (e) {
+    if (e.key === 'Enter') {
+      form.submit();
+    }
+  });
+});
+
+</script>
+
+{% endblock %}

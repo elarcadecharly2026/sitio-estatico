@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2>📄 Nuevo Documento</h2>
+    
+    <form method="POST" enctype="multipart/form-data" class="form-horizontal">
+        
+        <div class="form-group mb-3">
+            <label for="owner_id" class="form-label">Cliente:</label>
+            <select name="owner_id" id="owner_id" class="form-control" required>
+                <option value=""> Selecciona un cliente </option>
+                {% for owner in owners %}
+                <option value="{{ owner.id }}">{{ owner.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group mb-3">
+            <label for="pet_id" class="form-label">Mascota:</label>
+            <select name="pet_id" id="pet_id" class="form-control" required>
+                <option value=""> Selecciona una mascota </option>
+                {% for pet in pets %}
+                <option value="{{ pet.id }}">{{ pet.name }} ({{ pet.owner.name }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group mb-3">
+            <label for="tipo_documento" class="form-label">Tipo de Documento:</label>
+            <input type="text" name="tipo_documento" id="tipo_documento" class="form-control" 
+                   placeholder="ej: Vacuna, Cirugía, Desparasitante" required>
+        </div>
+        
+        <div class="form-group mb-3">
+            <label for="archivo" class="form-label">Archivo:</label>
+            <input type="file" name="archivo" id="archivo" class="form-control" 
+                   accept=".pdf,.jpg,.png,.jpeg" required>
+            <small class="form-text text-muted">PDF, JPG o PNG</small>
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">💾 Guardar Documento</button>
+            <a href="{{ url_for('documentos') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

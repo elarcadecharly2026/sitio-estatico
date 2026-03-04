@@ -1,0 +1,22 @@
+<!doctype html>
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/theme-arca.css') }}">
+<title>Entrar</title>
+</head>
+<body class="login">
+  <div class="login-card">
+    <h2>El Arca De Charly</h2>
+    <form method="post">
+      <label>Usuario (email)</label>
+      <input type="email" name="email" required>
+      <label>Contraseña</label>
+      <input type="password" name="password" required>
+      <button>Entrar</button>
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat,msg in messages %}<div class="flash">{{ msg }}</div>{% endfor %}
+    {% endwith %}
+  </div>
+</body></html>
